@@ -1,0 +1,91 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+typedef struct Node 
+{ 
+char data[100]; 
+struct Node *link; 
+}*NODE; 
+NODE front=NULL , rear=NULL; 
+NODE getNode() 
+{ 
+NODE    NewNode=(NODE)malloc(sizeof(struct Node)); 
+if(!NewNode) 
+printf("Memory Allocation Failed\n"); 
+printf("Enter the integer Data:\n"); 
+scanf(" %99[^\n]",&NewNode->data); 
+NewNode->link=NULL; 
+return NewNode; 
+} 
+NODE insert(NODE newNode) 
+{ 
+if(front==NULL) 
+{ 
+front=rear=newNode; 
+} 
+rear->link=newNode; 
+rear=newNode; 
+} 
+NODE Delete() 
+{ 
+if(front==NULL) 
+{ 
+printf("List is empty\n"); 
+} 
+NODE temp=front; 
+NODE prev=NULL; 
+if(temp->link==NULL) 
+{ 
+free(temp); 
+front=rear=NULL; 
+} 
+else{ 
+front=temp->link; 
+free(temp); 
+} 
+} 
+void Display() 
+{ 
+if(front==NULL) 
+{ 
+printf("\nList is Empty"); 
+} 
+else 
+{ 
+NODE temp=front; 
+do 
+{ 
+printf(" %s",temp->data); 
+temp=temp->link; 
+}while(temp!=rear->link); 
+} 
+} 
+int main() 
+{ 
+int ch; 
+for(;;) 
+{ 
+printf("\n\tMenu\n"); 
+printf("1: To insert Front\n"); 
+printf("2: To Delete Element\n"); 
+printf("3: To Display\n"); 
+printf("Enter your Choice :\n"); 
+scanf("%d",&ch); 
+switch(ch) 
+{ 
+case 1: 
+insert(getNode()); 
+break; 
+case 2: 
+Delete(); 
+break; 
+case 3: 
+Display(); 
+break; 
+case 4: 
+exit(0); 
+default: 
+printf("\nInvalid Choice\n"); 
+} 
+} 
+return 0; 
+}
