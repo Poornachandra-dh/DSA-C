@@ -1,64 +1,83 @@
-#include <stdio.h> 
-#include <stdlib.h> 
-int GCD(int m ,int n) 
-{ 
-if(n==0) 
-return m; 
-GCD(n,m%n); 
-} 
-void Hanoi(int n,char s, char a , char d ) 
-{ 
-if(n==1) 
-{ 
-printf("\nmove disk 1 from %c to %c",s,d); 
-return; 
-} 
-Hanoi(n-1,s,d,a); 
-printf("\nmove disk %d from %c to %c",n,s,d); 
-Hanoi(n-1,a,s,d); 
-} 
-int Large(int a[] , int n) 
-{ 
-if(n==1) 
-return a[0]; 
-int max=Large(a+1,n-1); 
-return (a[0]>max?a[0]:max); 
-} 
-int main() { 
-int ch,a,b,n,num,res1,res2,ar[100]; 
-for (;;) { 
-printf("\n\tMenu\n"); 
-printf("1: To GCD\n"); 
-printf("2: To Tower of hanoi\n"); 
-printf("3: To Largest\n"); 
-printf("Enter your Choice :\n"); 
-scanf("%d", &ch); 
-        switch (ch) { 
-            case 1: 
-                printf("Enter the value of a and b :"); 
-                scanf("%d%d",&a,&b); 
-                 res1=GCD(a,b); 
-                printf("GCD=%d",res1); 
-                break; 
-            case 2: 
-                printf("Enter the number of disks:"); 
-                scanf("%d",&num); 
-               Hanoi(num,'A','B','C'); 
-                break; 
-            case 3: 
-                printf("Enter the size of array:"); 
-                scanf("%d",&n); 
-                 printf("Enter the elements:"); 
-                 for(int i=0;i<n;i++) 
-                scanf("%d",&ar[i]); 
-                 res2=Large(ar,n); 
-                printf("Largest=%d",res2); 
-                break; 
-            case 4: 
-                exit(0); 
-            default: 
-                printf("\nInvalid Choice\n"); 
-        } 
-    } 
-    return 0; 
-} 
+#include <stdio.h>
+#include <conio.h> // For clrscr() and getch()
+
+// Function to compute GCD using recursion
+int GCD(int m, int n) {
+    if (n == 0)
+        return m;
+    return GCD(n, m % n);
+}
+
+// Function to solve Tower of Hanoi using recursion
+void Hanoi(int n, char source, char auxiliary, char destination) {
+    if (n == 1) {
+        printf("\nMove disk 1 from %c to %c", source, destination);
+        return;
+    }
+    Hanoi(n - 1, source, destination, auxiliary);
+    printf("\nMove disk %d from %c to %c", n, source, destination);
+    Hanoi(n - 1, auxiliary, source, destination);
+}
+
+// Function to find the largest element in an array using recursion
+int Large(int arr[], int n) {
+    int max;
+    if (n == 1)
+        return arr[0];
+    max = Large(arr + 1, n - 1);
+    return (arr[0] > max ? arr[0] : max);
+}
+
+int main() {
+    int ch, a, b, n, num, res1, res2, i, ar[100];
+
+    while (1) {
+        clrscr(); // Clear the screen
+        printf("\n\tMenu\n");
+        printf("1: To find GCD\n");
+        printf("2: To solve Tower of Hanoi\n");
+        printf("3: To find Largest Element in Array\n");
+        printf("4: Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &ch);
+
+        switch (ch) {
+            case 1: // GCD
+                printf("Enter the values of a and b: ");
+                scanf("%d%d", &a, &b);
+                res1 = GCD(a, b);
+                printf("GCD = %d\n", res1);
+                break;
+
+            case 2: // Tower of Hanoi
+                printf("Enter the number of disks: ");
+                scanf("%d", &num);
+                printf("The sequence of moves for Tower of Hanoi is:\n");
+                Hanoi(num, 'A', 'B', 'C');
+                break;
+
+            case 3: // Largest element in array
+                printf("Enter the size of the array: ");
+                scanf("%d", &n);
+                printf("Enter the elements: ");
+                for (i = 0; i < n; i++)
+                    scanf("%d", &ar[i]);
+                res2 = Large(ar, n);
+                printf("Largest = %d\n", res2);
+                break;
+
+            case 4: // Exit
+                printf("Exiting the program.\n");
+                getch(); // Wait for keypress before exiting
+                return 0;
+
+            default: // Invalid choice
+                printf("\nInvalid Choice\n");
+        }
+        printf("\nPress any key to continue...");
+        getch(); // Wait for keypress to proceed
+    }
+
+    return 0;
+}
+
