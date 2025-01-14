@@ -1,0 +1,74 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#define Max 50 
+int isOptr(char c){ 
+return(c=='+'||c=='-'||c=='*'||c=='/'||c=='^'||c=='$'); 
+} 
+int isOpd(char c){ 
+return((c>='A' && c<='Z')||(c>='a' && c<='z')||(c>='0' && c<='9')); 
+} 
+int getPriority(char c) 
+{ 
+switch(c) 
+{ 
+case '+': 
+case '-': 
+return 1; 
+case '*': 
+case '/': 
+return 2; 
+case '$': 
+case '^': 
+return 3; 
+default: 
+return 0; 
+} 
+} 
+void I2P(char Infix[] , char Po[]) 
+{ 
+int i,j,top=-1; 
+char stack[Max]; 
+stack[++top]='#'; 
+for(j=0,i=0;Infix[i]!='\0';i++) 
+{ 
+char sym=Infix[i]; 
+if(isOpd(sym)) 
+{ 
+Po[j++]=sym; 
+    } 
+    else if(sym=='(') 
+    { 
+      stack[++top]=sym; 
+    } 
+    else if(sym==')') 
+    { 
+        while(top!=-1 && stack[top]!='(' ) 
+        { 
+            Po[j++]=stack[top--]; 
+        } 
+        top--; 
+    } 
+     else if(isOptr(sym)) 
+     { 
+         while(top!=-1 && getPriority(stack[top])>=getPriority(sym)&&stack[top]!='#' ) 
+         { 
+             Po[j++]=stack[top--]; 
+         } 
+         stack[++top]=sym; 
+     } 
+  } 
+  while(stack[top]!='#') 
+  { 
+      Po[j++]=stack[top--]; 
+  } 
+  Po[j]='\0'; 
+} 
+int main() 
+{ 
+    char Infix[100],Po[100]; 
+    printf("Enter Infix Expression\n"); 
+    scanf(" %99[^\n]",Infix); 
+    I2P(Infix,Po); 
+    puts(Po); 
+    return 0; 
+} 
