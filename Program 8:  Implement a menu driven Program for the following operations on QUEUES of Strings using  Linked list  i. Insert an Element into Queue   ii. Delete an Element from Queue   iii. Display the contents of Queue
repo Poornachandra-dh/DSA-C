@@ -1,91 +1,121 @@
-#include <stdio.h> 
-#include <stdlib.h> 
-typedef struct Node 
-{ 
-char data[100]; 
-struct Node *link; 
-}*NODE; 
-NODE front=NULL , rear=NULL; 
-NODE getNode() 
-{ 
-NODE    NewNode=(NODE)malloc(sizeof(struct Node)); 
-if(!NewNode) 
-printf("Memory Allocation Failed\n"); 
-printf("Enter the integer Data:\n"); 
-scanf(" %99[^\n]",&NewNode->data); 
-NewNode->link=NULL; 
-return NewNode; 
-} 
-NODE insert(NODE newNode) 
-{ 
-if(front==NULL) 
-{ 
-front=rear=newNode; 
-} 
-rear->link=newNode; 
-rear=newNode; 
-} 
-NODE Delete() 
-{ 
-if(front==NULL) 
-{ 
-printf("List is empty\n"); 
-} 
-NODE temp=front; 
-NODE prev=NULL; 
-if(temp->link==NULL) 
-{ 
-free(temp); 
-front=rear=NULL; 
-} 
-else{ 
-front=temp->link; 
-free(temp); 
-} 
-} 
-void Display() 
-{ 
-if(front==NULL) 
-{ 
-printf("\nList is Empty"); 
-} 
-else 
-{ 
-NODE temp=front; 
-do 
-{ 
-printf(" %s",temp->data); 
-temp=temp->link; 
-}while(temp!=rear->link); 
-} 
-} 
-int main() 
-{ 
-int ch; 
-for(;;) 
-{ 
-printf("\n\tMenu\n"); 
-printf("1: To insert Front\n"); 
-printf("2: To Delete Element\n"); 
-printf("3: To Display\n"); 
-printf("Enter your Choice :\n"); 
-scanf("%d",&ch); 
-switch(ch) 
-{ 
-case 1: 
-insert(getNode()); 
-break; 
-case 2: 
-Delete(); 
-break; 
-case 3: 
-Display(); 
-break; 
-case 4: 
-exit(0); 
-default: 
-printf("\nInvalid Choice\n"); 
-} 
-} 
-return 0; 
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+
+// Node structure for the linked list
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Queue structure
+struct Queue {
+    struct Node* front;
+    struct Node* rear;
+};
+
+// Function to initialize the queue
+void initializeQueue(struct Queue* q) {
+    q->front = NULL;
+    q->rear = NULL;
 }
+
+// Function to check if the queue is empty
+int isEmpty(struct Queue* q) {
+    return (q->front == NULL);
+}
+
+// Function to insert an element into the queue
+void enqueue(struct Queue* q, int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        return;
+    }
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (isEmpty(q)) {
+        q->front = q->rear = newNode;
+    } else {
+        q->rear->next = newNode;
+        q->rear = newNode;
+    }
+    printf("Element %d inserted into the queue.\n", value);
+}
+
+// Function to delete an element from the queue
+void dequeue(struct Queue* q) {
+    struct Node* temp;
+    if (isEmpty(q)) {
+        printf("Queue is empty. Cannot delete an element.\n");
+        return;
+    }
+    temp = q->front;
+    printf("Element %d deleted from the queue.\n", temp->data);
+    q->front = q->front->next;
+
+    if (q->front == NULL) { // If the queue becomes empty
+        q->rear = NULL;
+    }
+    free(temp);
+}
+
+// Function to display the contents of the queue
+void display(struct Queue* q) {
+    struct Node* temp;
+    if (isEmpty(q)) {
+        printf("Queue is empty.\n");
+        return;
+    }
+    temp = q->front;
+    printf("Queue contents:\n");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct Queue q;
+    int choice, value;
+
+    initializeQueue(&q);
+
+    while (1) {
+        clrscr(); // Clear the screen
+        printf("\nQueue Operations Menu:\n");
+        printf("1. Insert an Element into Queue\n");
+        printf("2. Delete an Element from Queue\n");
+        printf("3. Display the Contents of Queue\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: // Enqueue
+                printf("Enter the integer to insert: ");
+                scanf("%d", &value);
+                enqueue(&q, value);
+                break;
+            case 2: // Dequeue
+                dequeue(&q);
+                break;
+            case 3: // Display
+                display(&q);
+                break;
+            case 4: // Exit
+                printf("Exiting the program.\n");
+                getch(); // Wait for keypress before exiting
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+        printf("\nPress any key to continue...");
+        getch(); // Wait for user input before continuing
+    }
+
+    return 0;
+}
+
