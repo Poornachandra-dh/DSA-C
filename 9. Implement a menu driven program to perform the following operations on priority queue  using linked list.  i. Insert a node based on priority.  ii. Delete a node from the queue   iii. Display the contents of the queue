@@ -1,98 +1,125 @@
-#include <stdio.h> 
-#include <stdlib.h> 
-typedef struct Node { 
-int data; 
-int pri; 
-struct Node *link; 
-} Node; 
-typedef Node* NODE; 
-NODE front = NULL, rear = NULL; 
-NODE getNode() { 
-NODE NewNode = (NODE)malloc(sizeof(Node)); 
-if (!NewNode) { 
-printf("Memory Allocation Failed\n"); 
-exit(1); 
-} 
-printf("Enter the integer Data:\n"); 
-scanf("%d", &NewNode->data); 
-printf("Enter the Priority of Data:\n"); 
-scanf("%d", &NewNode->pri); 
-NewNode->link = NULL; 
-return NewNode; 
-} 
-void insert(NODE newNode) { 
-if (front == NULL) { 
-front = rear = newNode; 
-} else { 
-NODE first = front; 
-NODE last = rear; 
-NODE prev = NULL; 
-if (newNode->pri < first->pri) { 
-newNode->link = first; 
-front = newNode; 
-} else if (newNode->pri >= last->pri) { 
-last->link = newNode; 
-rear = newNode; 
-} else { 
-while (newNode->pri >= first->pri) { 
-prev = first; 
-first = first->link; 
-} 
-prev->link = newNode; 
-newNode->link = first; 
-} 
-} 
-} 
-void Delete() { 
-if (front == NULL) { 
-printf("List is empty\n"); 
-return; 
-} 
-NODE temp = front; 
-if (temp->link == NULL) { 
-free(temp); 
-front = rear = NULL; 
-} else { 
-front = temp->link; 
-free(temp); 
-} 
-} 
-void Display() { 
-if (front == NULL) { 
-printf("\nList is Empty\n"); 
-} else { 
-NODE temp = front; 
-while (temp != NULL) { 
-printf("\nData=%d\tPriority=%d", temp->data, temp->pri); 
-temp = temp->link; 
-} 
-} 
-} 
-int main() { 
-int ch; 
-for (;;) { 
-printf("\n\tMenu\n"); 
-printf("1: To insert \n"); 
-printf("2: To Delete Element\n"); 
-printf("3: To Display\n"); 
-printf("4: To Exit\n"); 
-printf("Enter your Choice :\n"); 
-scanf("%d", &ch); 
-switch (ch) { 
-case 1: 
-insert(getNode()); 
-break; 
-case 2: 
-Delete(); 
-break; 
-case 3: 
-Display(); 
-break; 
-case 4: 
-exit(0); 
-default: 
-printf("\nInvalid Choice\n"); 
-} 
-} 
-return 0; 
-} 
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+
+// Node structure for the linked list
+struct Node {
+    int data;        // Data value
+    int priority;    // Priority value
+    struct Node* next;
+};
+
+// Priority Queue structure
+struct PriorityQueue {
+    struct Node* front;
+};
+
+// Function to initialize the priority queue
+void initializeQueue(struct PriorityQueue* pq) {
+    pq->front = NULL;
+}
+
+// Function to check if the priority queue is empty
+int isEmpty(struct PriorityQueue* pq) {
+    return (pq->front == NULL);
+}
+
+// Function to insert a node into the priority queue
+void enqueue(struct PriorityQueue* pq, int value, int priority) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        return;
+    }
+    newNode->data = value;
+    newNode->priority = priority;
+    newNode->next = NULL;
+
+    if (isEmpty(pq) || pq->front->priority > priority) {
+        // Insert at the front if queue is empty or new node has the highest priority
+        newNode->next = pq->front;
+        pq->front = newNode;
+    } else {
+        // Traverse and insert at the correct position based on priority
+        struct Node* temp = pq->front;
+        while (temp->next != NULL && temp->next->priority <= priority) {
+            temp = temp->next;
+        }
+        newNode->next = temp->next;
+        temp->next = newNode;
+    }
+    printf("Element %d with priority %d inserted into the queue.\n", value, priority);
+}
+
+// Function to delete a node from the front of the queue
+void dequeue(struct PriorityQueue* pq) {
+    struct Node* temp;
+    if (isEmpty(pq)) {
+        printf("Queue is empty. Cannot delete an element.\n");
+        return;
+    }
+    temp = pq->front;
+    printf("Element %d with priority %d deleted from the queue.\n", temp->data, temp->priority);
+    pq->front = pq->front->next;
+    free(temp);
+}
+
+// Function to display the contents of the priority queue
+void display(struct PriorityQueue* pq) {
+    struct Node* temp;
+    if (isEmpty(pq)) {
+        printf("Queue is empty.\n");
+        return;
+    }
+    temp = pq->front;
+    printf("Priority Queue contents (Value, Priority):\n");
+    while (temp != NULL) {
+        printf("(%d, %d) ", temp->data, temp->priority);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+int main() {
+    struct PriorityQueue pq;
+    int choice, value, priority;
+
+    initializeQueue(&pq);
+
+    while (1) {
+        clrscr(); // Clear the screen
+        printf("\nPriority Queue Operations Menu:\n");
+        printf("1. Insert a Node into the Queue\n");
+        printf("2. Delete a Node from the Queue\n");
+        printf("3. Display the Contents of the Queue\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: // Enqueue
+                printf("Enter the integer value to insert: ");
+                scanf("%d", &value);
+                printf("Enter the priority of the value: ");
+                scanf("%d", &priority);
+                enqueue(&pq, value, priority);
+                break;
+            case 2: // Dequeue
+                dequeue(&pq);
+                break;
+            case 3: // Display
+                display(&pq);
+                break;
+            case 4: // Exit
+                printf("Exiting the program.\n");
+                getch(); // Wait for keypress before exiting
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+        printf("\nPress any key to continue...");
+        getch(); // Wait for user input before continuing
+    }
+
+    return 0;
+}
