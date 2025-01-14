@@ -1,88 +1,122 @@
-#include <stdio.h> 
-#include <stdlib.h> 
-typedef struct Node { 
-int data; 
-struct Node *Llink; 
-struct Node *Rlink; 
-} Node; 
-typedef Node* NODE; 
-NODE front = NULL, rear = NULL; 
-NODE getNode() { 
-NODE NewNode = (NODE)malloc(sizeof(Node)); 
-if (!NewNode) { 
-printf("Memory Allocation Failed\n"); 
-exit(1); 
-} 
-printf("Enter the integer Data:\n"); 
-scanf("%d", &NewNode->data); 
-NewNode->Llink=NewNode->Rlink = NULL; 
-return NewNode; 
-} 
-NODE insert(NODE Root,NODE newNode) { 
-if (Root == NULL) { 
-return newNode; 
-} 
-NODE temp=Root; 
-if (newNode->data >temp->data ) 
-temp->Rlink=insert(temp->Rlink,newNode); 
-else 
-temp->Llink=insert(temp->Llink,newNode); 
-return Root; 
-} 
-void PreOrder(NODE Root) { 
-if(Root!=NULL) 
-{ 
-printf("%d ",Root->data); 
-PreOrder(Root->Llink); 
-PreOrder(Root->Rlink); 
-} 
-} 
-void PostOrder(NODE Root) { 
-if(Root!=NULL) 
-{ 
-PostOrder(Root->Llink); 
-PostOrder(Root->Rlink); 
-printf("%d ",Root->data); 
-} 
-} 
-void InOrder(NODE Root) { 
-if(Root!=NULL) 
-{ 
-InOrder(Root->Llink); 
-printf("%d ",Root->data); 
-InOrder(Root->Rlink); 
-} 
-} 
-int main() { 
-int ch; 
-NODE Root=NULL; 
-for (;;) { 
-printf("\n\tMenu\n"); 
-printf("1: To insert Node\n"); 
-printf("2: To PreOrder Traversal\n"); 
-printf("3: To PostOrder Traversal\n"); 
-printf("4: To To InOrder Traversal\n"); 
-printf("5: To Exit\n"); 
-printf("Enter your Choice :\n"); 
-scanf("%d", &ch); 
-switch (ch) { 
-case 1: 
-Root=insert(Root,getNode()); 
-break; 
-case 2: 
-PreOrder(Root); 
-break; 
-case 3: 
-PostOrder(Root); 
-break; 
-case 4: 
-InOrder(Root); 
-break; 
-case 5: 
-exit(0); 
-default: 
-printf("\nInvalid Choice\n"); 
-} 
-} 
-return 0; 
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+
+// Node structure for the BST
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Function to create a new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    newNode->data = value;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to insert a value into the BST
+struct Node* insertNode(struct Node* root, int value) {
+    if (root == NULL) {
+        return createNode(value);
+    }
+    if (value < root->data) {
+        root->left = insertNode(root->left, value);
+    } else if (value > root->data) {
+        root->right = insertNode(root->right, value);
+    }
+    return root;
+}
+
+// Inorder traversal (Left, Root, Right)
+void inorderTraversal(struct Node* root) {
+    if (root == NULL) {
+        return;
+    }
+    inorderTraversal(root->left);
+    printf("%d ", root->data);
+    inorderTraversal(root->right);
+}
+
+// Preorder traversal (Root, Left, Right)
+void preorderTraversal(struct Node* root) {
+    if (root == NULL) {
+        return;
+    }
+    printf("%d ", root->data);
+    preorderTraversal(root->left);
+    preorderTraversal(root->right);
+}
+
+// Postorder traversal (Left, Right, Root)
+void postorderTraversal(struct Node* root) {
+    if (root == NULL) {
+        return;
+    }
+    postorderTraversal(root->left);
+    postorderTraversal(root->right);
+    printf("%d ", root->data);
+}
+
+// Menu-driven program
+int main() {
+    struct Node* root = NULL;
+    int choice, value, n, i;
+
+    while (1) {
+        clrscr(); // Clear the screen
+        printf("\nBinary Search Tree Operations Menu:\n");
+        printf("1. Create a BST of N integers\n");
+        printf("2. Inorder Traversal\n");
+        printf("3. Preorder Traversal\n");
+        printf("4. Postorder Traversal\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: // Create BST
+                printf("Enter the number of elements: ");
+                scanf("%d", &n);
+                printf("Enter %d integers:\n", n);
+                for (i = 0; i < n; i++) {
+                    scanf("%d", &value);
+                    root = insertNode(root, value);
+                }
+                printf("BST created successfully.\n");
+                break;
+            case 2: // Inorder Traversal
+                printf("Inorder Traversal: ");
+                inorderTraversal(root);
+                printf("\n");
+                break;
+            case 3: // Preorder Traversal
+                printf("Preorder Traversal: ");
+                preorderTraversal(root);
+                printf("\n");
+                break;
+            case 4: // Postorder Traversal
+                printf("Postorder Traversal: ");
+                postorderTraversal(root);
+                printf("\n");
+                break;
+            case 5: // Exit
+                printf("Exiting the program.\n");
+                getch(); // Wait for keypress before exiting
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+        printf("\nPress any key to continue...");
+        getch(); // Wait for user input before continuing
+    }
+
+    return 0;
 }
